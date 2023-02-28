@@ -1,3 +1,115 @@
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
 :root {
-  background-color: grey;
+  --header-bgc: #ea580c;
+  --sidebar-bgc: #d4d4d8;
+  --main-bgc: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+body {
+  height: 100vh;
+}
+
+#content {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 0.2fr 1fr;
+  grid-template-rows: 5% 95%;
+}
+
+/* HEADER */
+
+.header {
+  grid-column: 1 / span 2;
+  min-height: 4rem;
+  background-color: var(--header-bgc);
+  box-shadow: rgba(0, 0, 0, 0.09) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px,
+    rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px,
+    rgba(0, 0, 0, 0.09) 0px 32px 16px;
+  z-index: 3;
+  padding-left: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: flex-end;
+  font-size: 45px;
+}
+
+.logo::before {
+  font-family: "Material Icons";
+  content: "\e896";
+  padding-right: 10px;
+}
+
+.theme::before {
+  font-family: "Material Icons";
+  content: "\e51c";
+  padding-right: 10px;
+  font-size: 25px;
+}
+
+/* SIDEBAR */
+
+.sidebar {
+  background-color: var(--sidebar-bgc);
+  min-width: 300px;
+  padding-top: 3rem;
+  padding-left: 2rem;
+}
+
+ul.default {
+  list-style-type: none;
+  font-size: 25px;
+}
+
+ul.default li {
+  display: flex;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+/* Icons */
+
+ul.default li:nth-child(1)::before {
+  font-family: "Material Icons";
+  content: "\e88a";
+  padding-right: 10px;
+  font-size: 25px;
+}
+
+ul.default li:nth-child(2)::before {
+  font-family: "Material Icons";
+  content: "\e935";
+  padding-right: 10px;
+  font-size: 25px;
+}
+
+ul.default li:nth-child(3)::before {
+  font-family: "Material Icons";
+  content: "\e916";
+  padding-right: 10px;
+  font-size: 25px;
+}
+
+.sidebar .projects {
+  margin-top: 6rem;
+}
+
+.add-project {
+  margin-top: 1rem;
+}
+
+/* MAIN */
+
+.main {
+  grid-column: 2 / span 1;
+  background-image: var(--main-bgc);
 }
