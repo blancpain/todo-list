@@ -8,6 +8,7 @@
   --header-bgc: #ea580c;
   --sidebar-bgc: #d4d4d8;
   --main-bgc: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 body {
@@ -41,6 +42,9 @@ body {
   display: flex;
   align-items: flex-end;
   font-size: 45px;
+  font-family: "Graphik Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  color: #1f1f1f;
 }
 
 .logo::before {
@@ -105,6 +109,10 @@ ul.default li:nth-child(3)::before {
 
 .add-project {
   margin-top: 1rem;
+  font-size: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
 
 /* MAIN */
