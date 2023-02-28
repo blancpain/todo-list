@@ -8,15 +8,13 @@
   --header-bgc: #ea580c;
   --sidebar-bgc: #d4d4d8;
   --main-bgc: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  --sidebar-hover-bgc: #a1a1aa;
+  --main-ff: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-body {
-  height: 100vh;
-}
-
 #content {
-  height: 100%;
+  min-height: 100vh;
   display: grid;
   grid-template-columns: 0.2fr 1fr;
   grid-template-rows: 5% 95%;
@@ -67,52 +65,133 @@ body {
   min-width: 300px;
   padding-top: 3rem;
   padding-left: 2rem;
+  padding-right: 2rem;
 }
 
-ul.default {
-  list-style-type: none;
+.default-projects {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  outline: none;
   font-size: 25px;
+  padding: 10px;
+  text-align: left;
+  width: 100%;
+  font-family: var(--main-ff);
+  font-weight: 500;
 }
 
-ul.default li {
+.sidebar button:hover {
+  background-color: var(--sidebar-hover-bgc);
+  border-radius: 8px;
+}
+
+div.default-projects button {
   display: flex;
   align-items: center;
-  margin-top: 1rem;
 }
 
 /* Icons */
 
-ul.default li:nth-child(1)::before {
+div.default-projects button::before,
+div.list-of-projects button::before {
   font-family: "Material Icons";
+  padding-right: 10px;
+  font-size: 25px;
+}
+div.default-projects button:nth-child(1)::before {
   content: "\e88a";
-  padding-right: 10px;
-  font-size: 25px;
 }
 
-ul.default li:nth-child(2)::before {
-  font-family: "Material Icons";
+div.default-projects button:nth-child(2)::before {
   content: "\e935";
-  padding-right: 10px;
-  font-size: 25px;
 }
 
-ul.default li:nth-child(3)::before {
-  font-family: "Material Icons";
+div.default-projects button:nth-child(3)::before {
   content: "\e916";
-  padding-right: 10px;
-  font-size: 25px;
 }
 
-.sidebar .projects {
-  margin-top: 6rem;
+div.list-of-projects button::before {
+  /* content: "\f075"; */
+  content: "\f0c5";
 }
 
-.add-project {
+/* Icons END */
+
+.projects .title {
+  font-size: 30px;
+  font-weight: 600;
+  padding-left: 10px;
+  margin-top: 5rem;
+  margin-bottom: 1rem;
+}
+
+div.list-of-projects button:first-child {
   margin-top: 1rem;
+}
+
+button.open-project-poppup {
   font-size: 20px;
-  background: none;
+}
+
+div.list-of-projects button {
+  margin-bottom: 0.5rem;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  position: relative;
+  padding: 10px;
+}
+
+div.list-of-projects button:hover::after {
+  content: "✖";
+  position: absolute;
+  right: 5%;
+}
+
+div.project-poppup {
+  position: relative;
+}
+
+form#add-project {
+  visibility: hidden;
+  position: absolute;
+  top: 0;
+}
+
+div.project-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+button#add-project-btn,
+button#cancel-project-btn {
+  font-size: 16px;
+  font-weight: bold;
   border: none;
-  cursor: pointer;
+  border-radius: 8px;
+  padding: 10px 20px;
+  width: 95px;
+  text-align: center;
+}
+
+button#add-project-btn:hover,
+button#cancel-project-btn:hover {
+  filter: opacity(55%);
+}
+
+button#add-project-btn {
+  background-color: #22c55e;
+}
+
+button#cancel-project-btn {
+  background-color: #ef4444;
 }
 
 /* MAIN */
@@ -120,4 +199,20 @@ ul.default li:nth-child(3)::before {
 .main {
   grid-column: 2 / span 1;
   background-image: var(--main-bgc);
+}
+
+/* GENERAL */
+
+.visibility {
+  visibility: hidden;
+}
+
+input[type="text"] {
+  background-image: #eee;
+  border: 1px solid #d6d9dc;
+  outline: none;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 21px;
+  width: 100%;
 }

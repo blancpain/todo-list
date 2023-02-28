@@ -16,16 +16,27 @@
       <div class="theme"></div>
     </div>
     <div class="sidebar">
-      <div class="default">
-        <ul class="default">
-          <li>Home</li>
-          <li>Today</li>
-          <li>Next 7 days</li>
-        </ul>
+      <div class="default-projects">
+        <button class="home">Home</button>
+        <button class="today">Today</button>
+        <button class="next-7-days">Next 7 days</button>
       </div>
       <div class="projects">
-        <h1>Projects</h1>
-        <button class="add-project">+ Add Project</button>
+        <div class="title">Projects</div>
+        <div class="list-of-projects"></div>
+        <div class="project-poppup">
+          <button class="open-project-poppup">+ Add Project</button>
+          <form id="add-project" action="">
+            <div class="input">
+              <label for="project-text"></label>
+              <input type="text" name="project-text" placeholder="Project name" id="project-text" required />
+            </div>
+            <div class="project-buttons">
+              <button id="add-project-btn">Add</button>
+              <button id="cancel-project-btn">Cancel</button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
     <div class="main"></div>
