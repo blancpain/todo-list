@@ -116,7 +116,7 @@ div.default-projects button:nth-child(3)::before {
   content: "\e916";
 }
 
-div.list-of-projects button::before {
+.new-project-button::before {
   /* content: "\f075"; */
   content: "\f0c5";
 }
@@ -139,7 +139,7 @@ button.open-project-poppup {
   font-size: 20px;
 }
 
-div.list-of-projects button {
+.new-project-button {
   margin-bottom: 0.5rem;
   display: flex;
   width: 100%;
@@ -148,10 +148,18 @@ div.list-of-projects button {
   padding: 10px;
 }
 
-div.list-of-projects button:hover::after {
-  content: "✖";
+.new-project-button__pseudo {
   position: absolute;
   right: 5%;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateX(-50%);
+  transition: visibility 0s, opacity 0.2s;
+}
+
+.new-project-button:hover .new-project-button__pseudo {
+  visibility: visible;
+  opacity: 1;
 }
 
 div.project-poppup {
