@@ -12,14 +12,52 @@
 <body>
   <div id="content">
     <div class="header">
-      <div class="logo">todo</div>
-      <div class="theme"></div>
+      <button type="button" id="header-collapse-btn">
+        <span class="header-logo">menu</span>
+      </button>
+      <div class="header-title">todo</div>
+      <div class="project-title">Home</div>
+      <div class="todo-poppup-container">
+        <div class="todo-poppup-header">todo</div>
+        <form id="add-todo" action="">
+          <label for="description"></label>
+          <input type="text" name="description" placeholder="What's on your mind?" id="description" required />
+          <label for="priority"></label>
+          <select id="priority" name="priority">
+            <option value="none" selected disabled hidden>
+              -- Select Priority --
+            </option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+          </select>
+          <label for="project"></label>
+          <select id="project" name="project">
+            <option value="none" selected disabled hidden>
+              -- Select Project --
+            </option>
+            <option value="home">Home</option>
+          </select>
+          <label for="date"></label>
+          <input type="date" name="date" placeholder="Schedule" id="date" />
+          <div class="todo-buttons">
+            <button type="submit" id="add-todo-btn">Add</button>
+            <button id="cancel-todo-btn">Cancel</button>
+          </div>
+        </form>
+      </div>
+      <div class="theme-and-logo">
+        <button class="open-todo-poppup">+</button>
+        <button id="change-theme">
+          <span class="change-theme-span">light_mode</span>
+        </button>
+      </div>
     </div>
     <div class="sidebar">
       <div class="default-projects">
         <button class="home">Home</button>
         <button class="today">Today</button>
-        <button class="next-7-days">Next 7 days</button>
+        <button class="next-7-days">Later</button>
       </div>
       <div class="projects">
         <div class="title">Projects</div>

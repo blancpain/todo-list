@@ -1,10 +1,11 @@
 export default class ToDo {
   static index = 0;
 
-  constructor(description, dueDate, priority, project = "Home") {
+  constructor(description, dueDate, priority, isCompleted, project = "Home") {
     this.description = description;
     this.dueDate = dueDate;
     this.priority = priority;
+    this.completed = isCompleted;
     this.project = project;
     this.index = ToDo.index++;
   }
@@ -31,6 +32,14 @@ export default class ToDo {
 
   set priority(value) {
     this.currentPriority = value;
+  }
+
+  get completed() {
+    return this.currentIsCompleted;
+  }
+
+  set completed(value) {
+    this.currentIsCompleted = value;
   }
 
   get project() {
