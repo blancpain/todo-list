@@ -74,6 +74,7 @@ const toDoController = (() => {
   const addToDoBtn = document.querySelector("#add-todo-btn");
   const cancelToDoBtn = document.querySelector("#cancel-todo-btn");
   const main = document.querySelector(".main");
+  const createdToDos = [];
 
   const openTodoPoppup = () => {
     toDoPoppup.classList.add("open-todo-container");
@@ -107,14 +108,21 @@ const toDoController = (() => {
         toDoProject
       );
       toDoContainer.addToDo(newToDo);
-      displayToDo(toDoDescription, toDoDueDate, toDoProject, toDoPriority);
+      const newToDoIndex = newToDo.index;
+      displayToDo(
+        toDoDescription,
+        toDoDueDate,
+        toDoProject,
+        toDoPriority,
+        newToDoIndex
+      );
 
       toDoPoppup.classList.remove("open-todo-container");
     }
     toDoForm.reset();
   };
 
-  const displayToDo = (description, dueDate, project, priority) => {
+  const displayToDo = (description, dueDate, project, priority, index) => {
     // creating the DOM elements for the ToDos
     const toDoWrapper = document.createElement("div");
     const toDoUpperRow = document.createElement("div");
@@ -141,8 +149,7 @@ const toDoController = (() => {
     toDoLowerRow.appendChild(toDoProject);
     main.appendChild(toDoWrapper);
 
-    // adding styles
-
+    // adding styles/ids
     toDoWrapper.classList.add("todo-container");
     toDoUpperRow.classList.add("todo-upper-row");
     toDoLowerRow.classList.add("todo-lower-row");
@@ -150,7 +157,9 @@ const toDoController = (() => {
     toDoEditBtn.classList.add("todo-edit");
     toDoEditSpan.classList.add("todo-edit-span");
     toDoDeleteBtn.classList.add("todo-delete");
-    toDoDeleteBtn.classList.add("todo-delete-span");
+    toDoDeleteSpan.classList.add("todo-delete-span");
+    toDoWrapper.setAttribute("data-index", `${index}`);
+    toDoLowerRow.id = project;
 
     // populating fields
     toDoDescription.textContent = description;
@@ -168,6 +177,17 @@ const toDoController = (() => {
     }
   };
 
+  const removeTodo = (e) => {
+    if (e.target.matches(".todo-delete-span")) {
+      const targetedToDoElem =
+        e.target.parentElement.parentElement.parentElement;
+      const targetedToDoIndex = Number(targetedToDoElem.dataset.index);
+      targetedToDoElem.remove();
+      toDoContainer.removeToDo(targetedToDoIndex);
+    }
+  };
+
+  document.addEventListener("click", removeTodo);
   openToDoPoppupBtn.addEventListener("click", openTodoPoppup);
   cancelToDoBtn.addEventListener("click", closeToDoPoppup);
   addToDoBtn.addEventListener("click", createToDo);

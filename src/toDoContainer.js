@@ -5,8 +5,12 @@ export default class toDoContainer {
     listOfTodos.push(todo);
   }
 
-  static removeToDo(todo) {
-    listOfTodos.splice(listOfTodos.indexOf(todo), 1);
+  static removeToDo(toDoIndex) {
+    for (let i = 0; i < listOfTodos.length; i++) {
+      if (listOfTodos[i].index === toDoIndex) {
+        listOfTodos.splice(listOfTodos.indexOf(listOfTodos[i]), 1);
+      }
+    }
   }
 
   static listOfTodos() {
