@@ -5,6 +5,14 @@ export default class toDoContainer {
     listOfTodos.push(todo);
   }
 
+  static findToDo(toDoIndex) {
+    for (let i = 0; i < listOfTodos.length; i++) {
+      if (listOfTodos[i].index === toDoIndex) {
+        return listOfTodos[i];
+      }
+    }
+  }
+
   static removeToDo(toDoIndex) {
     for (let i = 0; i < listOfTodos.length; i++) {
       if (listOfTodos[i].index === toDoIndex) {

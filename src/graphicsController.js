@@ -160,6 +160,7 @@ const toDoController = (() => {
     toDoDeleteSpan.classList.add("todo-delete-span");
     toDoWrapper.setAttribute("data-index", `${index}`);
     toDoLowerRow.id = project;
+    toDoIsCompleted.classList.add("check-if-completed");
 
     // populating fields
     toDoDescription.textContent = description;
@@ -177,6 +178,21 @@ const toDoController = (() => {
     }
   };
 
+  const completeToDo = (e) => {
+    const targetToDoDescription = e.target.parentElement.children[1];
+    const targetedToDoIndex = Number(
+      e.target.parentElement.parentElement.dataset.index
+    );
+
+    if (e.target.matches(".check-if-completed")) {
+      targetToDoDescription.classList.toggle("completed-todo");
+      const targetedToDo = toDoContainer.findToDo(targetedToDoIndex);
+      targetedToDo.completed = !targetedToDo.completed;
+      console.log(targetedToDo);
+      console.log(toDoContainer.listOfTodos());
+    }
+  };
+
   const removeTodo = (e) => {
     if (e.target.matches(".todo-delete-span")) {
       const targetedToDoElem =
@@ -187,6 +203,7 @@ const toDoController = (() => {
     }
   };
 
+  document.addEventListener("click", completeToDo);
   document.addEventListener("click", removeTodo);
   openToDoPoppupBtn.addEventListener("click", openTodoPoppup);
   cancelToDoBtn.addEventListener("click", closeToDoPoppup);
