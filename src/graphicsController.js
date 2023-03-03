@@ -2,7 +2,7 @@ import ToDo from "./todos";
 import toDoContainer from "./toDoContainer";
 import Project from "./projects";
 import projectContainer from "./projectContainer";
-import { loadHome, loadProject } from "./viewLoader";
+import { loadHome, loadDefault, loadProject } from "./viewLoader";
 
 const projectController = (() => {
   const projectPoppupBtn = document.querySelector(".open-project-poppup");
@@ -54,10 +54,27 @@ const projectController = (() => {
     if (e.target.matches(".new-project-button__pseudo")) {
       const selectedProject = e.target.parentElement.textContent;
       const targetedDomElem = e.target.parentElement;
-      projectContainer.removeProject(selectedProject);
-      targetedDomElem.remove();
-      createdDOMprojects.splice(createdDOMprojects.indexOf(selectedProject), 1);
-      loadHome();
+      let isProjectEmpty = true;
+      for (let i = 0; i < toDoContainer.listOfTodos().length; i++) {
+        const toDo = toDoContainer.listOfTodos()[i];
+        if (
+          toDo.project ===
+          selectedProject.substring(0, selectedProject.length - 1)
+        ) {
+          isProjectEmpty = false;
+        }
+      }
+      if (isProjectEmpty) {
+        projectContainer.removeProject(selectedProject);
+        targetedDomElem.remove();
+        createdDOMprojects.splice(
+          createdDOMprojects.indexOf(selectedProject),
+          1
+        );
+        loadHome();
+      } else {
+        alert("This project still has some unfinished to-dos.");
+      }
     }
   };
 
@@ -149,64 +166,70 @@ const toDoController = (() => {
     index,
     isToDoCompleted
   ) => {
-    // creating the DOM elements for the ToDos
     const main = document.querySelector(".main");
-    const toDoWrapper = document.createElement("div");
-    const toDoUpperRow = document.createElement("div");
-    const toDoIsCompleted = document.createElement("input");
-    toDoIsCompleted.type = "checkbox";
-    const toDoDescription = document.createElement("div");
-    const toDoDueDate = document.createElement("div");
-    const toDoEditBtn = document.createElement("button");
-    const toDoEditSpan = document.createElement("span");
-    const toDoDeleteBtn = document.createElement("button");
-    const toDoDeleteSpan = document.createElement("span");
-    const toDoLowerRow = document.createElement("div");
-    const toDoProject = document.createElement("div");
+    const projetTitle = document.querySelector(".project-title");
 
-    toDoWrapper.appendChild(toDoUpperRow);
-    toDoWrapper.appendChild(toDoLowerRow);
-    toDoUpperRow.appendChild(toDoIsCompleted);
-    toDoUpperRow.appendChild(toDoDescription);
-    toDoUpperRow.appendChild(toDoDueDate);
-    toDoUpperRow.appendChild(toDoEditBtn);
-    toDoEditBtn.appendChild(toDoEditSpan);
-    toDoUpperRow.appendChild(toDoDeleteBtn);
-    toDoDeleteBtn.appendChild(toDoDeleteSpan);
-    toDoLowerRow.appendChild(toDoProject);
-    main.appendChild(toDoWrapper);
+    // only display the ToDo if user is currently inside the relevant project
 
-    // adding styles/ids
-    toDoWrapper.classList.add("todo-container");
-    toDoUpperRow.classList.add("todo-upper-row");
-    toDoLowerRow.classList.add("todo-lower-row");
-    toDoDueDate.classList.add("todo-due-date");
-    toDoEditBtn.classList.add("todo-edit");
-    toDoEditSpan.classList.add("todo-edit-span");
-    toDoDeleteBtn.classList.add("todo-delete");
-    toDoDeleteSpan.classList.add("todo-delete-span");
-    if (index !== "") {
-      toDoWrapper.setAttribute("data-index", `${index}`);
-    }
-    toDoLowerRow.id = project;
-    toDoIsCompleted.classList.add("check-if-completed");
+    if (projetTitle.textContent.toLowerCase() === project.toLowerCase()) {
+      // creating the DOM elements for the ToDos
+      const toDoWrapper = document.createElement("div");
+      const toDoUpperRow = document.createElement("div");
+      const toDoIsCompleted = document.createElement("input");
+      toDoIsCompleted.type = "checkbox";
+      const toDoDescription = document.createElement("div");
+      const toDoDueDate = document.createElement("div");
+      const toDoEditBtn = document.createElement("button");
+      const toDoEditSpan = document.createElement("span");
+      const toDoDeleteBtn = document.createElement("button");
+      const toDoDeleteSpan = document.createElement("span");
+      const toDoLowerRow = document.createElement("div");
+      const toDoProject = document.createElement("div");
 
-    // populating fields
-    toDoDescription.textContent = description;
-    toDoDueDate.textContent = dueDate;
-    toDoProject.textContent = project;
-    toDoEditSpan.textContent = "edit_note";
-    toDoDeleteSpan.textContent = "delete";
+      toDoWrapper.appendChild(toDoUpperRow);
+      toDoWrapper.appendChild(toDoLowerRow);
+      toDoUpperRow.appendChild(toDoIsCompleted);
+      toDoUpperRow.appendChild(toDoDescription);
+      toDoUpperRow.appendChild(toDoDueDate);
+      toDoUpperRow.appendChild(toDoEditBtn);
+      toDoEditBtn.appendChild(toDoEditSpan);
+      toDoUpperRow.appendChild(toDoDeleteBtn);
+      toDoDeleteBtn.appendChild(toDoDeleteSpan);
+      toDoLowerRow.appendChild(toDoProject);
+      main.appendChild(toDoWrapper);
 
-    if (priority === "low") {
-      toDoIsCompleted.classList.add("low-priority");
-    } else if (priority === "medium") {
-      toDoIsCompleted.classList.add("medium-priority");
-    } else if (priority === "high") {
-      toDoIsCompleted.classList.add("high-priority");
-    }
-    if (isToDoCompleted === true) {
-      toDoDescription.classList.add("completed-todo");
+      // adding styles/ids
+      toDoWrapper.classList.add("todo-container");
+      toDoUpperRow.classList.add("todo-upper-row");
+      toDoLowerRow.classList.add("todo-lower-row");
+      toDoDueDate.classList.add("todo-due-date");
+      toDoEditBtn.classList.add("todo-edit");
+      toDoEditSpan.classList.add("todo-edit-span");
+      toDoDeleteBtn.classList.add("todo-delete");
+      toDoDeleteSpan.classList.add("todo-delete-span");
+      if (index !== "") {
+        toDoWrapper.setAttribute("data-index", `${index}`);
+      }
+      toDoLowerRow.id = project;
+      toDoIsCompleted.classList.add("check-if-completed");
+
+      // populating fields
+      toDoDescription.textContent = description;
+      toDoDueDate.textContent = dueDate;
+      toDoProject.textContent = project;
+      toDoEditSpan.textContent = "edit_note";
+      toDoDeleteSpan.textContent = "delete";
+
+      if (priority === "low") {
+        toDoIsCompleted.classList.add("low-priority");
+      } else if (priority === "medium") {
+        toDoIsCompleted.classList.add("medium-priority");
+      } else if (priority === "high") {
+        toDoIsCompleted.classList.add("high-priority");
+      }
+      if (isToDoCompleted === true) {
+        toDoDescription.classList.add("completed-todo");
+      }
     }
   };
 

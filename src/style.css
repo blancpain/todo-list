@@ -320,6 +320,7 @@ form#add-project {
   visibility: hidden;
   position: absolute;
   top: 0;
+  width: 100%;
 }
 
 div.project-buttons {
