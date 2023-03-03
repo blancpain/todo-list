@@ -2,7 +2,7 @@ import ToDo from "./todos";
 import toDoContainer from "./toDoContainer";
 import Project from "./projects";
 import projectContainer from "./projectContainer";
-import { loadHome } from "./viewLoader";
+import { loadHome, loadProject } from "./viewLoader";
 
 const projectController = (() => {
   const projectPoppupBtn = document.querySelector(".open-project-poppup");
@@ -51,9 +51,9 @@ const projectController = (() => {
   };
 
   const removeProject = (e) => {
-    const selectedProject = e.target.parentElement.textContent;
-    const targetedDomElem = e.target.parentElement;
     if (e.target.matches(".new-project-button__pseudo")) {
+      const selectedProject = e.target.parentElement.textContent;
+      const targetedDomElem = e.target.parentElement;
       projectContainer.removeProject(selectedProject);
       targetedDomElem.remove();
       createdDOMprojects.splice(createdDOMprojects.indexOf(selectedProject), 1);
@@ -74,8 +74,28 @@ const toDoController = (() => {
   const addToDoBtn = document.querySelector("#add-todo-btn");
   const cancelToDoBtn = document.querySelector("#cancel-todo-btn");
 
+  const clearProjectOptions = () => {
+    const projectSelectMenu = document.querySelectorAll(
+      ".added-project-option"
+    );
+    projectSelectMenu.forEach((option) => option.remove());
+  };
+
   const openTodoPoppup = () => {
     toDoPoppup.classList.add("open-todo-container");
+    clearProjectOptions();
+    const projectSelectMenu = document.querySelector("#select-project");
+
+    for (let i = 0; i < projectContainer.listProjects().length; i++) {
+      const project = projectContainer.listProjects()[i];
+
+      const newOption = document.createElement("option");
+      const optionText = document.createTextNode(project.project);
+      newOption.appendChild(optionText);
+      newOption.setAttribute("value", `${project.project}`);
+      newOption.classList.add("added-project-option");
+      projectSelectMenu.appendChild(newOption);
+    }
   };
 
   const closeToDoPoppup = (e) => {
@@ -112,7 +132,8 @@ const toDoController = (() => {
         toDoDueDate,
         toDoProject,
         toDoPriority,
-        newToDoIndex
+        newToDoIndex,
+        isToDoCompleted
       );
 
       toDoPoppup.classList.remove("open-todo-container");
@@ -120,7 +141,14 @@ const toDoController = (() => {
     toDoForm.reset();
   };
 
-  const displayToDo = (description, dueDate, project, priority, index) => {
+  const displayToDo = (
+    description,
+    dueDate,
+    project,
+    priority,
+    index,
+    isToDoCompleted
+  ) => {
     // creating the DOM elements for the ToDos
     const main = document.querySelector(".main");
     const toDoWrapper = document.createElement("div");
@@ -157,12 +185,7 @@ const toDoController = (() => {
     toDoEditSpan.classList.add("todo-edit-span");
     toDoDeleteBtn.classList.add("todo-delete");
     toDoDeleteSpan.classList.add("todo-delete-span");
-    if (
-      index !== undefined ||
-      index !== "" ||
-      index !== "none" ||
-      index !== null
-    ) {
+    if (index !== "") {
       toDoWrapper.setAttribute("data-index", `${index}`);
     }
     toDoLowerRow.id = project;
@@ -182,15 +205,17 @@ const toDoController = (() => {
     } else if (priority === "high") {
       toDoIsCompleted.classList.add("high-priority");
     }
+    if (isToDoCompleted === true) {
+      toDoDescription.classList.add("completed-todo");
+    }
   };
 
   const completeToDo = (e) => {
-    const targetToDoDescription = e.target.parentElement.children[1];
-    const targetedToDoIndex = Number(
-      e.target.parentElement.parentElement.dataset.index
-    );
-
     if (e.target.matches(".check-if-completed")) {
+      const targetToDoDescription = e.target.parentElement.children[1];
+      const targetedToDoIndex = Number(
+        e.target.parentElement.parentElement.dataset.index
+      );
       targetToDoDescription.classList.toggle("completed-todo");
       const targetedToDo = toDoContainer.findToDo(targetedToDoIndex);
       targetedToDo.completed = !targetedToDo.completed;

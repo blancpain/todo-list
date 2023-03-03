@@ -32,15 +32,16 @@ const loadHome = () => {
         toDo.dueDate,
         toDo.project,
         toDo.priority,
-        ""
+        toDo.index,
+        toDo.completed
       );
     }
   }
 };
 
 const loadProject = (e) => {
-  const selectedProject = e.target.textContent;
   if (e.target.matches(".new-project-button")) {
+    const selectedProject = e.target.textContent;
     clearContent();
     projectTitle.textContent = selectedProject.substring(
       0,
@@ -50,19 +51,20 @@ const loadProject = (e) => {
     for (let i = 0; i < toDoContainer.listOfTodos().length; i++) {
       const toDo = toDoContainer.listOfTodos()[i];
 
-      if (toDo.project === selectedProject) {
+      if (toDo.project === projectTitle.textContent) {
         toDoController.displayToDo(
           toDo.description,
           toDo.dueDate,
           toDo.project,
-          toDo.priority
+          toDo.priority,
+          toDo.index,
+          toDo.completed
         );
       }
     }
   }
 };
 
-// maybe call clearContent inside loadDefault....
 document.addEventListener("click", loadProject);
 home.addEventListener("click", loadHome);
 today.addEventListener("click", (e) => {

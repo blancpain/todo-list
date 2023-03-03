@@ -19,5 +19,5 @@ export default class Project {
   }
 }
 
-const defaultProject = new Project("Home");
-projectContainer.addProject(defaultProject);
+// const defaultProject = new Project("Home");
+// projectContainer.addProject(defaultProject);
