@@ -73,8 +73,6 @@ const toDoController = (() => {
   const toDoForm = document.querySelector("#add-todo");
   const addToDoBtn = document.querySelector("#add-todo-btn");
   const cancelToDoBtn = document.querySelector("#cancel-todo-btn");
-  const main = document.querySelector(".main");
-  const createdToDos = [];
 
   const openTodoPoppup = () => {
     toDoPoppup.classList.add("open-todo-container");
@@ -124,6 +122,7 @@ const toDoController = (() => {
 
   const displayToDo = (description, dueDate, project, priority, index) => {
     // creating the DOM elements for the ToDos
+    const main = document.querySelector(".main");
     const toDoWrapper = document.createElement("div");
     const toDoUpperRow = document.createElement("div");
     const toDoIsCompleted = document.createElement("input");
@@ -158,7 +157,14 @@ const toDoController = (() => {
     toDoEditSpan.classList.add("todo-edit-span");
     toDoDeleteBtn.classList.add("todo-delete");
     toDoDeleteSpan.classList.add("todo-delete-span");
-    toDoWrapper.setAttribute("data-index", `${index}`);
+    if (
+      index !== undefined ||
+      index !== "" ||
+      index !== "none" ||
+      index !== null
+    ) {
+      toDoWrapper.setAttribute("data-index", `${index}`);
+    }
     toDoLowerRow.id = project;
     toDoIsCompleted.classList.add("check-if-completed");
 
@@ -188,8 +194,6 @@ const toDoController = (() => {
       targetToDoDescription.classList.toggle("completed-todo");
       const targetedToDo = toDoContainer.findToDo(targetedToDoIndex);
       targetedToDo.completed = !targetedToDo.completed;
-      console.log(targetedToDo);
-      console.log(toDoContainer.listOfTodos());
     }
   };
 
@@ -208,6 +212,8 @@ const toDoController = (() => {
   openToDoPoppupBtn.addEventListener("click", openTodoPoppup);
   cancelToDoBtn.addEventListener("click", closeToDoPoppup);
   addToDoBtn.addEventListener("click", createToDo);
+
+  return { displayToDo };
 })();
 
 export { projectController, toDoController };
