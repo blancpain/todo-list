@@ -3,11 +3,15 @@ import toDoContainer from "./toDoContainer";
 import Project from "./projects";
 import projectContainer from "./projectContainer";
 import { loadHome, loadDefault, loadProject } from "./viewLoader";
+import {
+  saveInLocalStorage,
+  getToDoFromLocalStorage,
+  getProjectFromLocalStorage,
+} from "./storage";
 
 const projectController = (() => {
   const projectPoppupBtn = document.querySelector(".open-project-poppup");
   const projectPoppup = document.querySelector("#add-project");
-  const listOfProjectsDOM = document.querySelector(".list-of-projects");
   const addProjectBtn = document.querySelector("#add-project-btn");
   const cancelProjectBtn = document.querySelector("#cancel-project-btn");
   const createdDOMprojects = [];
@@ -23,7 +27,7 @@ const projectController = (() => {
     projectPoppup.setAttribute("style", "visibility:hidden;");
   };
 
-  const addProject = (e) => {
+  const createProject = (e) => {
     const userInput = document.querySelector("#project-text");
     if (createdDOMprojects.includes(userInput.value)) {
       e.preventDefault();
@@ -32,22 +36,31 @@ const projectController = (() => {
     }
     if (userInput.value !== "") {
       e.preventDefault();
-      const newDomProject = document.createElement("button");
-      // TODO - div for remove btn not good for accessbility, consider changing
-      const removeBtn = document.createElement("div");
       const newProject = new Project(userInput.value);
       projectContainer.addProject(newProject);
-      newDomProject.textContent = userInput.value;
-      newDomProject.setAttribute("data-index", `${newProject.index}`);
-      newDomProject.classList.add("new-project-button");
-      removeBtn.classList.add("new-project-button__pseudo");
-      removeBtn.textContent = "✖";
-      newDomProject.appendChild(removeBtn);
-      listOfProjectsDOM.appendChild(newDomProject);
       projectPoppup.setAttribute("style", "visibility:hidden;");
       createdDOMprojects.push(userInput.value);
+      displayProject(userInput.value, newProject.index);
+      // save in local storage
+      saveInLocalStorage(projectContainer.listProjects(), "project");
+      getProjectFromLocalStorage();
+      // testing ABOVE
       userInput.value = "";
     }
+  };
+
+  const displayProject = (projectTitle, projectIndex) => {
+    const listOfProjectsDOM = document.querySelector(".list-of-projects");
+    const newDomProject = document.createElement("button");
+    const removeBtn = document.createElement("div");
+    // TODO - div for remove btn not good for accessbility, consider changing
+    newDomProject.textContent = projectTitle;
+    newDomProject.setAttribute("data-index", `${projectIndex}`);
+    newDomProject.classList.add("new-project-button");
+    removeBtn.classList.add("new-project-button__pseudo");
+    removeBtn.textContent = "✖";
+    newDomProject.appendChild(removeBtn);
+    listOfProjectsDOM.appendChild(newDomProject);
   };
 
   const removeProject = (e) => {
@@ -71,6 +84,7 @@ const projectController = (() => {
           createdDOMprojects.indexOf(selectedProject),
           1
         );
+        saveInLocalStorage(projectContainer.listProjects(), "project");
         loadHome();
       } else {
         alert("This project still has some unfinished to-dos.");
@@ -80,7 +94,7 @@ const projectController = (() => {
 
   document.addEventListener("click", removeProject);
   projectPoppupBtn.addEventListener("click", openProjectPoppup);
-  addProjectBtn.addEventListener("click", addProject);
+  addProjectBtn.addEventListener("click", createProject);
   cancelProjectBtn.addEventListener("click", closeProjectPoppup);
 })();
 
@@ -145,6 +159,12 @@ const toDoController = (() => {
       );
       toDoContainer.addToDo(newToDo);
       const newToDoIndex = newToDo.index;
+
+      // save to local storage
+      saveInLocalStorage(toDoContainer.listOfTodos(), "todo");
+      getToDoFromLocalStorage();
+      // testing ABOVE
+
       displayToDo(
         toDoDescription,
         convertedDate,
@@ -258,6 +278,7 @@ const toDoController = (() => {
       const targetedToDoIndex = Number(targetedToDoElem.dataset.index);
       targetedToDoElem.remove();
       toDoContainer.removeToDo(targetedToDoIndex);
+      saveInLocalStorage(toDoContainer.listOfTodos(), "todo");
     }
   };
 
