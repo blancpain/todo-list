@@ -132,12 +132,13 @@ const toDoController = (() => {
         ? "home"
         : toDoForm.children.project.value;
     const toDoDueDate = toDoForm.children.date.value;
+    const convertedDate = toDoDueDate === "" ? "" : new Date(toDoDueDate);
     const isToDoCompleted = false;
     if (toDoDescription !== "") {
       e.preventDefault();
       const newToDo = new ToDo(
         toDoDescription,
-        toDoDueDate,
+        convertedDate,
         toDoPriority,
         isToDoCompleted,
         toDoProject
@@ -146,7 +147,7 @@ const toDoController = (() => {
       const newToDoIndex = newToDo.index;
       displayToDo(
         toDoDescription,
-        toDoDueDate,
+        convertedDate,
         toDoProject,
         toDoPriority,
         newToDoIndex,
@@ -164,14 +165,18 @@ const toDoController = (() => {
     project,
     priority,
     index,
-    isToDoCompleted
+    isToDoCompleted,
+    isDateRelated
   ) => {
     const main = document.querySelector(".main");
     const projetTitle = document.querySelector(".project-title");
 
     // only display the ToDo if user is currently inside the relevant project
 
-    if (projetTitle.textContent.toLowerCase() === project.toLowerCase()) {
+    if (
+      projetTitle.textContent.toLowerCase() === project.toLowerCase() ||
+      isDateRelated
+    ) {
       // creating the DOM elements for the ToDos
       const toDoWrapper = document.createElement("div");
       const toDoUpperRow = document.createElement("div");
@@ -215,7 +220,8 @@ const toDoController = (() => {
 
       // populating fields
       toDoDescription.textContent = description;
-      toDoDueDate.textContent = dueDate;
+      toDoDueDate.textContent =
+        dueDate === "" ? "" : dueDate.toLocaleDateString();
       toDoProject.textContent = project;
       toDoEditSpan.textContent = "edit_note";
       toDoDeleteSpan.textContent = "delete";

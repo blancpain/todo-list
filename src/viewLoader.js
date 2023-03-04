@@ -1,3 +1,4 @@
+import { isToday, endOfToday, isAfter } from "date-fns";
 import toDoContainer from "./toDoContainer";
 import projectContainer from "./projectContainer";
 import { toDoController } from "./graphicsController";
@@ -15,35 +16,78 @@ const clearContent = () => {
 };
 
 const loadDefault = (e) => {
-  if (e.target.matches(".project-button")) {
+  const targetedDefaulProject = e.target;
+  const targetedDefaultProjectValue = targetedDefaulProject.textContent;
+  if (targetedDefaulProject.matches(".project-button")) {
     // remove highlight from any new project btns
     const allProjectButtons = document.querySelectorAll(".new-project-button");
     allProjectButtons.forEach((button) => button.classList.remove("active"));
     // add highlight to selected default project btn
     const allDefaultButton = document.querySelectorAll(".project-button");
-    const targetProjectValue = e.target.textContent;
     allDefaultButton.forEach((button) => {
-      if (targetProjectValue !== button.textContent) {
+      if (targetedDefaultProjectValue !== button.textContent) {
         button.classList.remove("active");
       } else {
         button.classList.add("active");
       }
     });
     clearContent();
-    projectTitle.textContent = targetProjectValue;
+    projectTitle.textContent = targetedDefaultProjectValue;
 
-    for (let i = 0; i < toDoContainer.listOfTodos().length; i++) {
-      const toDo = toDoContainer.listOfTodos()[i];
+    if (targetedDefaultProjectValue === "Today") {
+      for (let i = 0; i < toDoContainer.listOfTodos().length; i++) {
+        const toDo = toDoContainer.listOfTodos()[i];
+        const toDoDate = new Date(toDo.dueDate);
+        const isDateRelated = true;
 
-      if (toDo.project.toLowerCase() === targetProjectValue.toLowerCase()) {
-        toDoController.displayToDo(
-          toDo.description,
-          toDo.dueDate,
-          toDo.project,
-          toDo.priority,
-          toDo.index,
-          toDo.completed
-        );
+        if (isToday(toDoDate)) {
+          toDoController.displayToDo(
+            toDo.description,
+            toDoDate,
+            toDo.project,
+            toDo.priority,
+            toDo.index,
+            toDo.completed,
+            isDateRelated
+          );
+        }
+      }
+    } else if (targetedDefaultProjectValue === "Home") {
+      for (let i = 0; i < toDoContainer.listOfTodos().length; i++) {
+        const toDo = toDoContainer.listOfTodos()[i];
+
+        if (
+          toDo.project.toLowerCase() ===
+          targetedDefaultProjectValue.toLowerCase()
+        ) {
+          toDoController.displayToDo(
+            toDo.description,
+            toDo.dueDate,
+            toDo.project,
+            toDo.priority,
+            toDo.index,
+            toDo.completed
+          );
+        }
+      }
+    } else if (targetedDefaultProjectValue === "Later") {
+      for (let i = 0; i < toDoContainer.listOfTodos().length; i++) {
+        const toDo = toDoContainer.listOfTodos()[i];
+        const toDoDate = new Date(toDo.dueDate);
+        const todaysDate = endOfToday();
+        const isDateRelated = true;
+
+        if (isAfter(toDoDate, todaysDate)) {
+          toDoController.displayToDo(
+            toDo.description,
+            toDoDate,
+            toDo.project,
+            toDo.priority,
+            toDo.index,
+            toDo.completed,
+            isDateRelated
+          );
+        }
       }
     }
   }
