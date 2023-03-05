@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from "uuid";
 import projectContainer from "./projectContainer";
 
 export default class Project {
@@ -5,7 +6,7 @@ export default class Project {
 
   constructor(project) {
     this.project = project;
-    this.index = Project.index++;
+    this.index = uuidv4();
   }
 
   get project() {

@@ -2,12 +2,8 @@ import ToDo from "./todos";
 import toDoContainer from "./toDoContainer";
 import Project from "./projects";
 import projectContainer from "./projectContainer";
-import { loadHome, loadDefault, loadProject } from "./viewLoader";
-import {
-  saveInLocalStorage,
-  getToDoFromLocalStorage,
-  getProjectFromLocalStorage,
-} from "./storage";
+import { loadHome } from "./viewLoader";
+import { saveInLocalStorage } from "./storage";
 
 const projectController = (() => {
   const projectPoppupBtn = document.querySelector(".open-project-poppup");
@@ -43,8 +39,7 @@ const projectController = (() => {
       displayProject(userInput.value, newProject.index);
       // save in local storage
       saveInLocalStorage(projectContainer.listProjects(), "project");
-      getProjectFromLocalStorage();
-      // testing ABOVE
+      // clear project form
       userInput.value = "";
     }
   };
@@ -84,7 +79,9 @@ const projectController = (() => {
           createdDOMprojects.indexOf(selectedProject),
           1
         );
+        // update local storate to reflect removal
         saveInLocalStorage(projectContainer.listProjects(), "project");
+
         loadHome();
       } else {
         alert("This project still has some unfinished to-dos.");
@@ -96,6 +93,8 @@ const projectController = (() => {
   projectPoppupBtn.addEventListener("click", openProjectPoppup);
   addProjectBtn.addEventListener("click", createProject);
   cancelProjectBtn.addEventListener("click", closeProjectPoppup);
+
+  return { displayProject };
 })();
 
 const toDoController = (() => {
@@ -160,10 +159,8 @@ const toDoController = (() => {
       toDoContainer.addToDo(newToDo);
       const newToDoIndex = newToDo.index;
 
-      // save to local storage
+      // save in local storage
       saveInLocalStorage(toDoContainer.listOfTodos(), "todo");
-      getToDoFromLocalStorage();
-      // testing ABOVE
 
       displayToDo(
         toDoDescription,
@@ -278,6 +275,7 @@ const toDoController = (() => {
       const targetedToDoIndex = Number(targetedToDoElem.dataset.index);
       targetedToDoElem.remove();
       toDoContainer.removeToDo(targetedToDoIndex);
+      // update local storage to reflect removal
       saveInLocalStorage(toDoContainer.listOfTodos(), "todo");
     }
   };

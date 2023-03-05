@@ -1,7 +1,10 @@
 import { isToday, endOfToday, isAfter } from "date-fns";
 import toDoContainer from "./toDoContainer";
 import projectContainer from "./projectContainer";
-import { toDoController } from "./graphicsController";
+import { toDoController, projectController } from "./graphicsController";
+import { getToDoFromLocalStorage, getProjectFromLocalStorage } from "./storage";
+import ToDo from "./todos";
+import Project from "./projects";
 
 const home = document.querySelector("#home");
 const today = document.querySelector("#today");
@@ -15,10 +18,61 @@ const clearContent = () => {
   }
 };
 
+const initialLoad = () => {
+  const storedTodos = getToDoFromLocalStorage();
+  const storedProjects = getProjectFromLocalStorage();
+
+  for (let i = 0; i < storedProjects.length; i++) {
+    const project = storedProjects[i];
+    const restoredProjectTitle = project.currentProject;
+    const restoredProject = new Project(restoredProjectTitle);
+    projectContainer.addProject(restoredProject);
+
+    projectController.displayProject(
+      restoredProject.project,
+      restoredProject.index
+    );
+  }
+
+  for (let j = 0; j < storedTodos.length; j++) {
+    const toDo = storedTodos[j];
+    const restoredToDoDescription = toDo.currentDescription;
+    const restoredToDoDueDate = toDo.currentDueDate;
+    // convert date to Date obj for date-fns functions to work
+    const convertedDate = new Date(restoredToDoDueDate);
+    const restoredToDoPriority = toDo.currentPriority;
+    const restoredToDoCompleted = toDo.currentIsCompleted;
+    const restoredToDoProject = toDo.currentProject;
+    const restoredToDoIndex = toDo.index;
+
+    const restoredToDo = new ToDo(
+      restoredToDoDescription,
+      convertedDate,
+      restoredToDoPriority,
+      restoredToDoCompleted,
+      restoredToDoProject
+    );
+
+    toDoContainer.addToDo(restoredToDo);
+    toDoController.displayToDo(
+      restoredToDoDescription,
+      convertedDate,
+      restoredToDoProject,
+      restoredToDoPriority,
+      restoredToDoIndex,
+      restoredToDoCompleted
+    );
+  }
+};
+
 const loadDefault = (e) => {
   const targetedDefaulProject = e.target;
   const targetedDefaultProjectValue = targetedDefaulProject.textContent;
   if (targetedDefaulProject.matches(".project-button")) {
+    // testing
+    initialLoad();
+    // testing
+
     // remove highlight from any new project btns
     const allProjectButtons = document.querySelectorAll(".new-project-button");
     allProjectButtons.forEach((button) => button.classList.remove("active"));

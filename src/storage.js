@@ -7,12 +7,13 @@ const saveInLocalStorage = (list, type) => {
 };
 
 const getToDoFromLocalStorage = () => {
-  const retrievedTodo = JSON.parse(localStorage.getItem("todo"));
-  console.log(retrievedTodo);
+  const storedTodos = JSON.parse(localStorage.getItem("todo"));
+  return storedTodos;
 };
 
 const getProjectFromLocalStorage = () => {
-  const retrievedListOfProjects = JSON.parse(localStorage.getItem("project"));
+  const storedProjects = JSON.parse(localStorage.getItem("project"));
+  return storedProjects;
 };
 
 export {

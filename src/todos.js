@@ -1,13 +1,14 @@
-export default class ToDo {
-  static index = 0;
+import { v4 as uuidv4 } from "uuid";
+// uuid ensures we have unique IDs across instances that persist
 
+export default class ToDo {
   constructor(description, dueDate, priority, isCompleted, project = "Home") {
     this.description = description;
     this.dueDate = dueDate;
     this.priority = priority;
     this.completed = isCompleted;
     this.project = project;
-    this.index = ToDo.index++;
+    this.index = uuidv4();
   }
 
   get description() {
