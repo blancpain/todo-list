@@ -79,7 +79,7 @@ const projectController = (() => {
           createdDOMprojects.indexOf(selectedProject),
           1
         );
-        // update local storate to reflect removal
+        // update local storage to reflect removal
         saveInLocalStorage(projectContainer.listProjects(), "project");
 
         loadHome();
@@ -272,7 +272,7 @@ const toDoController = (() => {
     if (e.target.matches(".todo-delete-span")) {
       const targetedToDoElem =
         e.target.parentElement.parentElement.parentElement;
-      const targetedToDoIndex = Number(targetedToDoElem.dataset.index);
+      const targetedToDoIndex = targetedToDoElem.dataset.index;
       targetedToDoElem.remove();
       toDoContainer.removeToDo(targetedToDoIndex);
       // update local storage to reflect removal

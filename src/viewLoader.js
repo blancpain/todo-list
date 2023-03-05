@@ -2,7 +2,11 @@ import { isToday, endOfToday, isAfter } from "date-fns";
 import toDoContainer from "./toDoContainer";
 import projectContainer from "./projectContainer";
 import { toDoController, projectController } from "./graphicsController";
-import { getToDoFromLocalStorage, getProjectFromLocalStorage } from "./storage";
+import {
+  saveInLocalStorage,
+  getToDoFromLocalStorage,
+  getProjectFromLocalStorage,
+} from "./storage";
 import ToDo from "./todos";
 import Project from "./projects";
 
@@ -22,46 +26,58 @@ const initialLoad = () => {
   const storedTodos = getToDoFromLocalStorage();
   const storedProjects = getProjectFromLocalStorage();
 
-  for (let i = 0; i < storedProjects.length; i++) {
-    const project = storedProjects[i];
-    const restoredProjectTitle = project.currentProject;
-    const restoredProject = new Project(restoredProjectTitle);
-    projectContainer.addProject(restoredProject);
+  // restore stored projects
+  if (storedProjects !== null) {
+    for (let i = 0; i < storedProjects.length; i++) {
+      const project = storedProjects[i];
+      const restoredProjectTitle = project.currentProject;
+      const restoredProject = new Project(restoredProjectTitle);
+      projectContainer.addProject(restoredProject);
 
-    projectController.displayProject(
-      restoredProject.project,
-      restoredProject.index
-    );
+      projectController.displayProject(
+        restoredProject.project,
+        restoredProject.index
+      );
+      // refresh localStorage to reflect new indices
+      saveInLocalStorage(projectContainer.listProjects(), "project");
+    }
   }
 
-  for (let j = 0; j < storedTodos.length; j++) {
-    const toDo = storedTodos[j];
-    const restoredToDoDescription = toDo.currentDescription;
-    const restoredToDoDueDate = toDo.currentDueDate;
-    // convert date to Date obj for date-fns functions to work
-    const convertedDate = new Date(restoredToDoDueDate);
-    const restoredToDoPriority = toDo.currentPriority;
-    const restoredToDoCompleted = toDo.currentIsCompleted;
-    const restoredToDoProject = toDo.currentProject;
-    const restoredToDoIndex = toDo.index;
+  // restore stored to-dos
+  if (storedTodos !== null) {
+    for (let j = 0; j < storedTodos.length; j++) {
+      const toDo = storedTodos[j];
+      const restoredToDoDescription = toDo.currentDescription;
+      const restoredToDoDueDate = toDo.currentDueDate;
+      // convert date to Date obj for date-fns functions to work
+      const convertedDate =
+        restoredToDoDueDate === "" ? "" : new Date(restoredToDoDueDate);
+      const restoredToDoPriority = toDo.currentPriority;
+      const restoredToDoCompleted = toDo.currentIsCompleted;
+      const restoredToDoProject = toDo.currentProject;
 
-    const restoredToDo = new ToDo(
-      restoredToDoDescription,
-      convertedDate,
-      restoredToDoPriority,
-      restoredToDoCompleted,
-      restoredToDoProject
-    );
+      const restoredToDo = new ToDo(
+        restoredToDoDescription,
+        convertedDate,
+        restoredToDoPriority,
+        restoredToDoCompleted,
+        restoredToDoProject
+      );
+      const restoredToDoIndex = restoredToDo.index;
 
-    toDoContainer.addToDo(restoredToDo);
-    toDoController.displayToDo(
-      restoredToDoDescription,
-      convertedDate,
-      restoredToDoProject,
-      restoredToDoPriority,
-      restoredToDoIndex,
-      restoredToDoCompleted
-    );
+      toDoContainer.addToDo(restoredToDo);
+      toDoController.displayToDo(
+        restoredToDoDescription,
+        convertedDate,
+        restoredToDoProject,
+        restoredToDoPriority,
+        restoredToDoIndex,
+        restoredToDoCompleted
+      );
+
+      // refresh localStorage to reflect new indices
+      saveInLocalStorage(toDoContainer.listOfTodos(), "todo");
+    }
   }
 };
 
@@ -69,10 +85,6 @@ const loadDefault = (e) => {
   const targetedDefaulProject = e.target;
   const targetedDefaultProjectValue = targetedDefaulProject.textContent;
   if (targetedDefaulProject.matches(".project-button")) {
-    // testing
-    initialLoad();
-    // testing
-
     // remove highlight from any new project btns
     const allProjectButtons = document.querySelectorAll(".new-project-button");
     allProjectButtons.forEach((button) => button.classList.remove("active"));
@@ -211,4 +223,4 @@ const loadProject = (e) => {
 document.addEventListener("click", loadProject);
 document.addEventListener("click", loadDefault);
 
-export { loadDefault, loadProject, loadHome };
+export { loadDefault, loadProject, loadHome, initialLoad };
