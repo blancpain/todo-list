@@ -20,9 +20,9 @@
       <div class="todo-poppup-container">
         <div class="todo-poppup-header">todo</div>
         <form id="add-todo" action="">
-          <label for="description"></label>
+          <label for="description" id="description-label">Description</label>
           <input type="text" name="description" placeholder="What's on your mind?" id="description" required />
-          <label for="priority"></label>
+          <label for="priority" id="priority-label">Priority</label>
           <select id="priority" name="priority">
             <option value="none" selected disabled hidden>
               -- Select Priority --
@@ -31,14 +31,14 @@
             <option value="medium">Medium</option>
             <option value="low">Low</option>
           </select>
-          <label for="project"></label>
+          <label for="project" id="project-label">Project</label>
           <select id="select-project" name="project">
             <option value="none" selected disabled hidden>
               -- Select Project --
             </option>
             <option value="home">Home</option>
           </select>
-          <label for="date"></label>
+          <label for="date" id="date-label">Due date</label>
           <input type="date" name="date" placeholder="Schedule" id="date" />
           <div class="todo-buttons">
             <button type="submit" id="add-todo-btn">Add</button>

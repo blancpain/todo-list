@@ -101,7 +101,6 @@ const toDoController = (() => {
   const openToDoPoppupBtn = document.querySelector(".open-todo-poppup");
   const toDoPoppup = document.querySelector(".todo-poppup-container");
   const toDoForm = document.querySelector("#add-todo");
-  const addToDoBtn = document.querySelector("#add-todo-btn");
   const cancelToDoBtn = document.querySelector("#cancel-todo-btn");
 
   const clearProjectOptions = () => {
@@ -112,6 +111,7 @@ const toDoController = (() => {
   };
 
   const openTodoPoppup = () => {
+    toDoForm.reset();
     toDoPoppup.classList.add("open-todo-container");
     clearProjectOptions();
     const projectSelectMenu = document.querySelector("#select-project");
@@ -126,6 +126,18 @@ const toDoController = (() => {
       newOption.classList.add("added-project-option");
       projectSelectMenu.appendChild(newOption);
     }
+
+    // check if Edit button has been click and Add btn has been removed - add it back
+    // we check children[0] since ADD button is originally at the 0 position but
+    // changes to [1] when the user clicks Edit (flex row-reverse is used)
+    const toDoBtns = document.querySelector(".todo-buttons");
+    if (toDoBtns.children[0].id !== "add-todo-btn") {
+      toDoBtns.children[1].remove();
+      const newAddBtn = document.createElement("button");
+      newAddBtn.textContent = "Add";
+      newAddBtn.id = "add-todo-btn";
+      toDoBtns.appendChild(newAddBtn);
+    }
   };
 
   const closeToDoPoppup = (e) => {
@@ -135,45 +147,47 @@ const toDoController = (() => {
   };
 
   const createToDo = (e) => {
-    const toDoDescription = toDoForm.children.description.value;
-    const toDoPriority =
-      toDoForm.children.priority.value === "none"
-        ? ""
-        : toDoForm.children.priority.value;
-    const toDoProject =
-      toDoForm.children.project.value === "none"
-        ? "home"
-        : toDoForm.children.project.value;
-    const toDoDueDate = toDoForm.children.date.value;
-    const convertedDate = toDoDueDate === "" ? "" : new Date(toDoDueDate);
-    const isToDoCompleted = false;
-    if (toDoDescription !== "") {
-      e.preventDefault();
-      const newToDo = new ToDo(
-        toDoDescription,
-        convertedDate,
-        toDoPriority,
-        isToDoCompleted,
-        toDoProject
-      );
-      toDoContainer.addToDo(newToDo);
-      const newToDoIndex = newToDo.index;
+    if (e.target.matches("#add-todo-btn")) {
+      const toDoDescription = toDoForm.children.description.value;
+      const toDoPriority =
+        toDoForm.children.priority.value === "none"
+          ? ""
+          : toDoForm.children.priority.value;
+      const toDoProject =
+        toDoForm.children.project.value === "none"
+          ? "home"
+          : toDoForm.children.project.value;
+      const toDoDueDate = toDoForm.children.date.value;
+      const convertedDate = toDoDueDate === "" ? "" : new Date(toDoDueDate);
+      const isToDoCompleted = false;
+      if (toDoDescription !== "") {
+        e.preventDefault();
+        const newToDo = new ToDo(
+          toDoDescription,
+          convertedDate,
+          toDoPriority,
+          isToDoCompleted,
+          toDoProject
+        );
+        toDoContainer.addToDo(newToDo);
+        const newToDoIndex = newToDo.index;
 
-      // save in local storage
-      saveInLocalStorage(toDoContainer.listOfTodos(), "todo");
+        // save in local storage
+        saveInLocalStorage(toDoContainer.listOfTodos(), "todo");
 
-      displayToDo(
-        toDoDescription,
-        convertedDate,
-        toDoProject,
-        toDoPriority,
-        newToDoIndex,
-        isToDoCompleted
-      );
+        displayToDo(
+          toDoDescription,
+          convertedDate,
+          toDoProject,
+          toDoPriority,
+          newToDoIndex,
+          isToDoCompleted
+        );
 
-      toDoPoppup.classList.remove("open-todo-container");
+        toDoPoppup.classList.remove("open-todo-container");
+      }
+      toDoForm.reset();
     }
-    toDoForm.reset();
   };
 
   const displayToDo = (
@@ -259,12 +273,83 @@ const toDoController = (() => {
   const completeToDo = (e) => {
     if (e.target.matches(".check-if-completed")) {
       const targetToDoDescription = e.target.parentElement.children[1];
-      const targetedToDoIndex = Number(
-        e.target.parentElement.parentElement.dataset.index
-      );
+      const targetedToDoIndex =
+        e.target.parentElement.parentElement.dataset.index;
       targetToDoDescription.classList.toggle("completed-todo");
       const targetedToDo = toDoContainer.findToDo(targetedToDoIndex);
       targetedToDo.completed = !targetedToDo.completed;
+      // update local storage to reflect completion
+      saveInLocalStorage(toDoContainer.listOfTodos(), "todo");
+    }
+  };
+
+  const editTodo = (e) => {
+    if (e.target.matches(".todo-edit-span")) {
+      const targetedToDoElem =
+        e.target.parentElement.parentElement.parentElement;
+      const targetedToDoIndex = targetedToDoElem.dataset.index;
+      const correspondingToDo = toDoContainer.findToDo(targetedToDoIndex);
+
+      toDoPoppup.classList.add("open-todo-container");
+
+      // fill out fields with corresponding todo details
+      const toDoDescriptionField = document.querySelector("#description");
+      toDoDescriptionField.value = correspondingToDo.description;
+      // refresh projects and select current todo project
+      clearProjectOptions();
+      const projectSelectMenu = document.querySelector("#select-project");
+      for (let i = 0; i < projectContainer.listProjects().length; i++) {
+        const project = projectContainer.listProjects()[i];
+
+        const newOption = document.createElement("option");
+        const optionText = document.createTextNode(project.project);
+        newOption.appendChild(optionText);
+        newOption.setAttribute("value", `${project.project}`);
+        newOption.classList.add("added-project-option");
+        projectSelectMenu.appendChild(newOption);
+      }
+      projectSelectMenu.value = correspondingToDo.project;
+      const prioritySelectMenu = document.querySelector("#priority");
+      prioritySelectMenu.value = correspondingToDo.priority;
+      const toDoDateField = document.querySelector("#date");
+      toDoDateField.value =
+        correspondingToDo.dueDate === ""
+          ? ""
+          : correspondingToDo.dueDate.toISOString().slice(0, 10);
+
+      // remove the Add button and add an Edit button (separate event listener exists for Edit)
+      // if Edit button already exists do nothing
+
+      const toDoBtns = document.querySelector(".todo-buttons");
+      if (toDoBtns.children[1].id !== "edit-todo-btn") {
+        const oldAddToDoBtn = document.querySelector("#add-todo-btn");
+        oldAddToDoBtn.remove();
+        const newEditBtn = document.createElement("button");
+        newEditBtn.textContent = "Edit";
+        newEditBtn.id = "edit-todo-btn";
+        toDoBtns.appendChild(newEditBtn);
+        toDoBtns.setAttribute("style", "flex-direction: row-reverse;");
+
+        // add event listener to edit btn
+        newEditBtn.addEventListener("click", (event) => {
+          event.preventDefault();
+          // update values where changed
+          correspondingToDo.description = toDoDescriptionField.value;
+          correspondingToDo.priority =
+            prioritySelectMenu.value === "none" ? "" : prioritySelectMenu.value;
+          correspondingToDo.project =
+            projectSelectMenu.value === "none"
+              ? "home"
+              : projectSelectMenu.value;
+          correspondingToDo.dueDate =
+            toDoDateField.value === "" ? "" : new Date(toDoDateField.value);
+
+          // update local storage to reflect any changes
+          saveInLocalStorage(toDoContainer.listOfTodos(), "todo");
+
+          toDoPoppup.classList.remove("open-todo-container");
+        });
+      }
     }
   };
 
@@ -280,11 +365,12 @@ const toDoController = (() => {
     }
   };
 
+  document.addEventListener("click", createToDo);
   document.addEventListener("click", completeToDo);
+  document.addEventListener("click", editTodo);
   document.addEventListener("click", removeTodo);
   openToDoPoppupBtn.addEventListener("click", openTodoPoppup);
   cancelToDoBtn.addEventListener("click", closeToDoPoppup);
-  addToDoBtn.addEventListener("click", createToDo);
 
   return { displayToDo };
 })();
