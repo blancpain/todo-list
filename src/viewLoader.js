@@ -180,6 +180,23 @@ const loadHome = () => {
   }
 };
 
+const reloadPage = (title) => {
+  clearContent();
+  for (let i = 0; i < toDoContainer.listOfTodos().length; i++) {
+    const toDo = toDoContainer.listOfTodos()[i];
+    if (toDo.project === title) {
+      toDoController.displayToDo(
+        toDo.description,
+        toDo.dueDate,
+        toDo.project,
+        toDo.priority,
+        toDo.index,
+        toDo.completed
+      );
+    }
+  }
+};
+
 const loadProject = (e) => {
   if (e.target.matches(".new-project-button")) {
     const selectedProject = e.target.textContent;
@@ -223,4 +240,4 @@ const loadProject = (e) => {
 document.addEventListener("click", loadProject);
 document.addEventListener("click", loadDefault);
 
-export { loadDefault, loadProject, loadHome, initialLoad };
+export { loadDefault, loadProject, loadHome, initialLoad, reloadPage };

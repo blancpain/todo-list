@@ -2,7 +2,7 @@ import ToDo from "./todos";
 import toDoContainer from "./toDoContainer";
 import Project from "./projects";
 import projectContainer from "./projectContainer";
-import { loadHome } from "./viewLoader";
+import { loadHome, reloadPage } from "./viewLoader";
 import { saveInLocalStorage } from "./storage";
 
 const projectController = (() => {
@@ -257,6 +257,9 @@ const toDoController = (() => {
       toDoEditSpan.textContent = "edit_note";
       toDoDeleteSpan.textContent = "delete";
 
+      // add data-indext to edit btn to differentiate
+      toDoEditSpan.setAttribute("data-index", index);
+
       if (priority === "low") {
         toDoIsCompleted.classList.add("low-priority");
       } else if (priority === "medium") {
@@ -283,12 +286,16 @@ const toDoController = (() => {
     }
   };
 
-  const editTodo = (e) => {
+  // REFACTOR BELOW
+
+  const openEditTodo = (e) => {
     if (e.target.matches(".todo-edit-span")) {
       const targetedToDoElem =
         e.target.parentElement.parentElement.parentElement;
       const targetedToDoIndex = targetedToDoElem.dataset.index;
       const correspondingToDo = toDoContainer.findToDo(targetedToDoIndex);
+      // apply the index created in displayTodo() above to differentiate edits
+      const editSpanIndex = targetedToDoIndex;
 
       toDoPoppup.classList.add("open-todo-container");
 
@@ -317,38 +324,53 @@ const toDoController = (() => {
           ? ""
           : correspondingToDo.dueDate.toISOString().slice(0, 10);
 
-      // remove the Add button and add an Edit button (separate event listener exists for Edit)
-      // if Edit button already exists do nothing
+      // create edit button if one doesn't exist and update it's index
 
       const toDoBtns = document.querySelector(".todo-buttons");
       if (toDoBtns.children[1].id !== "edit-todo-btn") {
-        const oldAddToDoBtn = document.querySelector("#add-todo-btn");
-        oldAddToDoBtn.remove();
         const newEditBtn = document.createElement("button");
         newEditBtn.textContent = "Edit";
         newEditBtn.id = "edit-todo-btn";
+        newEditBtn.setAttribute("data-index", editSpanIndex);
+        newEditBtn.classList.add("new-edit-btn");
+        const oldAddToDoBtn = document.querySelector("#add-todo-btn");
+        oldAddToDoBtn.remove();
         toDoBtns.appendChild(newEditBtn);
         toDoBtns.setAttribute("style", "flex-direction: row-reverse;");
+      } else if (toDoBtns.children[1].id === "edit-todo-btn") {
+        toDoBtns.children[1].setAttribute("data-index", editSpanIndex);
+      }
+    }
+  };
 
-        // add event listener to edit btn
-        newEditBtn.addEventListener("click", (event) => {
-          event.preventDefault();
-          // update values where changed
-          correspondingToDo.description = toDoDescriptionField.value;
-          correspondingToDo.priority =
-            prioritySelectMenu.value === "none" ? "" : prioritySelectMenu.value;
-          correspondingToDo.project =
-            projectSelectMenu.value === "none"
-              ? "home"
-              : projectSelectMenu.value;
-          correspondingToDo.dueDate =
-            toDoDateField.value === "" ? "" : new Date(toDoDateField.value);
+  const editTodo = (e) => {
+    // add event listener to new edit btn
+    if (e.target.matches(".new-edit-btn")) {
+      const toDoIndex = e.target.dataset.index;
+      const toDoToBeEdited = toDoContainer.findToDo(toDoIndex);
+      const currentProjectTitle = toDoToBeEdited.project;
 
-          // update local storage to reflect any changes
-          saveInLocalStorage(toDoContainer.listOfTodos(), "todo");
+      // update values if changed
+      if (toDoForm.children.description.value !== "") {
+        e.preventDefault();
+        toDoToBeEdited.description = toDoForm.children.description.value;
+        toDoToBeEdited.priority =
+          toDoForm.children.priority.value === "none"
+            ? ""
+            : toDoForm.children.priority.value;
+        toDoToBeEdited.project = toDoForm.children.project.value;
+        toDoToBeEdited.dueDate =
+          toDoForm.children.date.value === ""
+            ? ""
+            : new Date(toDoForm.children.date.value);
 
-          toDoPoppup.classList.remove("open-todo-container");
-        });
+        // update local storage to reflect any changes
+        saveInLocalStorage(toDoContainer.listOfTodos(), "todo");
+
+        // reload page to display updated to-do(s)
+        reloadPage(currentProjectTitle);
+
+        toDoPoppup.classList.remove("open-todo-container");
       }
     }
   };
@@ -367,6 +389,7 @@ const toDoController = (() => {
 
   document.addEventListener("click", createToDo);
   document.addEventListener("click", completeToDo);
+  document.addEventListener("click", openEditTodo);
   document.addEventListener("click", editTodo);
   document.addEventListener("click", removeTodo);
   openToDoPoppupBtn.addEventListener("click", openTodoPoppup);
