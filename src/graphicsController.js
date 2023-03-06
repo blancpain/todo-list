@@ -335,7 +335,7 @@ const toDoController = (() => {
       const toDoBtns = document.querySelector(".todo-buttons");
       if (toDoBtns.children[1].id !== "edit-todo-btn") {
         const newEditBtn = document.createElement("button");
-        newEditBtn.textContent = "Edit";
+        newEditBtn.textContent = "Submit";
         newEditBtn.id = "edit-todo-btn";
         newEditBtn.setAttribute("data-index", editSpanIndex);
         newEditBtn.classList.add("new-edit-btn");

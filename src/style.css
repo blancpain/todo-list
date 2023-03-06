@@ -492,11 +492,44 @@ input[type="checkbox"]:checked::before {
 }
 
 .hide-sidebar{
-  display:none;
+  display:none !important;
 }
 
 .expand-main {
   grid-column: 1 / span 3;
 }
 
-/* ANIMATIONS */
+/* MOBILE/TABLET */
+
+@media only screen and (max-width: 600px) {
+  #content {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  .header {
+    display: flex;
+    align-items: center;
+  }
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  button#add-project-btn,
+  button#cancel-project-btn {
+    font-size: 15px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    padding: 5px 12px;
+    width: 68px;
+    text-align: center;
+  }
+  .sidebar input[type="text"] {
+    font-size: 15px;
+  }
+  .main {
+    height: 100%;
+  }
+}
