@@ -2,7 +2,7 @@
 
 To-do app written in HTML, CSS & JS. Bundled using webpack.
 
-Users can create to-dos and assign them to different projects. To-dos can be assign different priorities and due dates. Users can also view to-dos that are due today or later.
+Users can create to-dos and assign them to different projects. To-dos can be assigned different priorities and due dates. Users can also view to-dos that are due today or later.
 
 Theme switcher and (enhanced) mobile responsiveness to be implemented at a later stage.
 
