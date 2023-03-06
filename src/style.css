@@ -239,7 +239,7 @@ button#cancel-todo-btn {
   border: none;
   cursor: pointer;
   outline: none;
-  font-size: 25px;
+  font-size: 20px;
   padding: 10px;
   text-align: left;
   width: 100%;
@@ -404,12 +404,16 @@ button#cancel-project-btn {
   padding-left: 2.4rem;
 }
 
+.todo-description-field {
+  overflow: hidden;
+}
+
 input[type="checkbox"] {
   appearance: none;
 }
 
 input[type="checkbox"] {
-  width: 20px;
+  min-width: 20px;
   height: 20px;
   border-radius: 10px;
   border: 2px solid gray;
@@ -485,6 +489,14 @@ input[type="checkbox"]:checked::before {
   text-decoration: line-through;
   color: gray;
   transition: text-decoration 0.5s ease-in-out;
+}
+
+.hide-sidebar{
+  display:none;
+}
+
+.expand-main {
+  grid-column: 1 / span 3;
 }
 
 /* ANIMATIONS */

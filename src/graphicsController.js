@@ -31,16 +31,20 @@ const projectController = (() => {
       return;
     }
     if (userInput.value !== "") {
-      e.preventDefault();
-      const newProject = new Project(userInput.value);
-      projectContainer.addProject(newProject);
-      projectPoppup.setAttribute("style", "visibility:hidden;");
-      createdDOMprojects.push(userInput.value);
-      displayProject(userInput.value, newProject.index);
-      // save in local storage
-      saveInLocalStorage(projectContainer.listProjects(), "project");
-      // clear project form
-      userInput.value = "";
+      if (userInput.value.length < 11) {
+        e.preventDefault();
+        const newProject = new Project(userInput.value);
+        projectContainer.addProject(newProject);
+        projectPoppup.setAttribute("style", "visibility:hidden;");
+        createdDOMprojects.push(userInput.value);
+        displayProject(userInput.value, newProject.index);
+        // save in local storage
+        saveInLocalStorage(projectContainer.listProjects(), "project");
+        // clear project form
+        userInput.value = "";
+      } else {
+        alert("Project name must not exceed 10 characters.");
+      }
     }
   };
 
@@ -102,6 +106,7 @@ const toDoController = (() => {
   const toDoPoppup = document.querySelector(".todo-poppup-container");
   const toDoForm = document.querySelector("#add-todo");
   const cancelToDoBtn = document.querySelector("#cancel-todo-btn");
+  const hideSidebarBtn = document.querySelector(".header-logo");
 
   const clearProjectOptions = () => {
     const projectSelectMenu = document.querySelectorAll(
@@ -238,6 +243,7 @@ const toDoController = (() => {
       toDoWrapper.classList.add("todo-container");
       toDoUpperRow.classList.add("todo-upper-row");
       toDoLowerRow.classList.add("todo-lower-row");
+      toDoDescription.classList.add("todo-description-field");
       toDoDueDate.classList.add("todo-due-date");
       toDoEditBtn.classList.add("todo-edit");
       toDoEditSpan.classList.add("todo-edit-span");
@@ -387,6 +393,13 @@ const toDoController = (() => {
     }
   };
 
+  const hideSidebar = () => {
+    const sidebar = document.querySelector(".sidebar");
+    const mainContent = document.querySelector(".main");
+    sidebar.classList.toggle("hide-sidebar");
+    mainContent.classList.toggle("expand-main");
+  };
+
   document.addEventListener("click", createToDo);
   document.addEventListener("click", completeToDo);
   document.addEventListener("click", openEditTodo);
@@ -394,6 +407,7 @@ const toDoController = (() => {
   document.addEventListener("click", removeTodo);
   openToDoPoppupBtn.addEventListener("click", openTodoPoppup);
   cancelToDoBtn.addEventListener("click", closeToDoPoppup);
+  hideSidebarBtn.addEventListener("click", hideSidebar);
 
   return { displayToDo };
 })();
